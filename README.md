@@ -30,7 +30,7 @@ A modern full-stack web application built with React (frontend), Express (backen
 
 ## Prerequisites
 
-- Node.js 18+ (for local development)
+- Node.js 20+ (for local development)
 - Docker and Docker Compose (for containerized deployment)
 - MySQL 8.0+ (for local development without Docker)
 

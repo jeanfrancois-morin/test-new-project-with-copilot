@@ -27,25 +27,40 @@ let pool;
 
 // Initialize database connection
 const initDB = async () => {
-  try {
-    pool = mysql.createPool(dbConfig);
-    console.log('Database connection pool created');
-    
-    // Create table if not exists
-    const connection = await pool.getConnection();
-    await connection.query(`
-      CREATE TABLE IF NOT EXISTS items (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        description TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-    connection.release();
-    console.log('Database table initialized');
-  } catch (error) {
-    console.error('Error initializing database:', error);
-    // Don't exit, allow server to start even if DB is not ready
+  const maxRetries = 10;
+  let retries = 0;
+  
+  while (retries < maxRetries) {
+    try {
+      pool = mysql.createPool(dbConfig);
+      console.log('Database connection pool created');
+      
+      // Test the connection
+      const connection = await pool.getConnection();
+      
+      // Create table if not exists
+      await connection.query(`
+        CREATE TABLE IF NOT EXISTS items (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          name VARCHAR(255) NOT NULL,
+          description TEXT,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      connection.release();
+      console.log('Database table initialized');
+      return; // Success
+    } catch (error) {
+      retries++;
+      console.error(`Error initializing database (attempt ${retries}/${maxRetries}):`, error.message);
+      
+      if (retries < maxRetries) {
+        console.log('Retrying in 3 seconds...');
+        await new Promise(resolve => setTimeout(resolve, 3000));
+      } else {
+        console.error('Max retries reached. Starting server without database connection.');
+      }
+    }
   }
 };
 
