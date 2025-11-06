@@ -69,24 +69,31 @@ A modern full-stack web application built with React (frontend), Express (backen
 
 ### Docker Development
 
-1. **Build and start all services**
+1. **Configure environment variables (recommended for production)**
    ```bash
-   docker-compose up --build
+   # Copy the example env file
+   cp .env.example .env
+   # Edit .env and set a secure database password
    ```
 
-2. **Access the application**
+2. **Build and start all services**
+   ```bash
+   docker compose up --build
+   ```
+
+3. **Access the application**
    - Frontend: http://localhost
    - Backend API: http://localhost:5000
    - MySQL: localhost:3306
 
-3. **Stop all services**
+4. **Stop all services**
    ```bash
-   docker-compose down
+   docker compose down
    ```
 
-4. **Stop and remove volumes (clean slate)**
+5. **Stop and remove volumes (clean slate)**
    ```bash
-   docker-compose down -v
+   docker compose down -v
    ```
 
 ## API Endpoints
@@ -175,6 +182,32 @@ npm run build
 
 # Build creates optimized static files in dist/
 ```
+
+## Security Considerations
+
+⚠️ **Important**: The default configuration uses weak passwords for demonstration purposes.
+
+**For Production Deployments:**
+
+1. **Change Default Passwords**
+   - Update `MYSQL_ROOT_PASSWORD` in `.env` file
+   - Use strong, unique passwords (minimum 16 characters)
+   - Never commit `.env` files to version control
+
+2. **Environment Variables**
+   - Store sensitive data in environment variables or secrets management systems
+   - Use Docker secrets or Kubernetes secrets for production
+   - The provided `.env.example` file shows the required variables
+
+3. **Network Security**
+   - Expose only necessary ports (frontend port 80/443)
+   - Keep database and backend on internal Docker network
+   - Use SSL/TLS certificates for HTTPS in production
+
+4. **Database Security**
+   - Use least-privilege database users instead of root
+   - Enable MySQL security features
+   - Regular backups and updates
 
 ## Troubleshooting
 
