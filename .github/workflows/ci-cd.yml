@@ -94,8 +94,26 @@ jobs:
 
     - name: Test Docker Compose
       run: |
-        docker-compose up -d
-        sleep 30
-        docker-compose ps
-        docker-compose logs
-        docker-compose down -v
+        docker compose up -d
+        echo "Waiting for services to be healthy..."
+        
+        # Wait for backend health check
+        for i in {1..30}; do
+          if curl -f http://localhost:5000/health > /dev/null 2>&1; then
+            echo "Backend is healthy!"
+            break
+          fi
+          echo "Waiting for backend... ($i/30)"
+          sleep 2
+        done
+        
+        # Verify all services are running
+        docker compose ps
+        docker compose logs backend
+        docker compose logs frontend
+        
+        # Test API endpoint
+        curl -f http://localhost:5000/api/items || exit 1
+        
+        # Cleanup
+        docker compose down -v
