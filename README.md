@@ -5,10 +5,11 @@ A modern full-stack web application built with React (frontend), Express (backen
 ## Features
 
 - **Frontend**: React single-page application with Vite build tool
-- **Backend**: Express RESTful API server
+- **Backend**: Express RESTful API server with rate limiting
 - **Database**: MySQL 8.0 for data persistence
 - **Docker**: Fully containerized application with Docker Compose
 - **CI/CD**: GitHub Actions pipeline for automated testing and deployment
+- **Security**: Rate limiting, environment variables, and secure defaults
 
 ## Project Structure
 
