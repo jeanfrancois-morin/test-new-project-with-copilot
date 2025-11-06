@@ -165,7 +165,7 @@ app.delete('/api/items/:id', async (req, res) => {
   }
 });
 
-// Health check
+// Health check (not rate-limited to allow frequent monitoring)
 app.get('/health', async (req, res) => {
   try {
     await pool.query('SELECT 1');
